@@ -91,7 +91,7 @@ Once the backend is running, you can access:
 ## Features
 
 - **Alien Friend Character (Zara)**: A fully-realized AI character with comprehensive system prompt
-- **Gemini 1.5 Flash Integration**: Uses Google's Gemini model with system instructions
+- **Gemini 2.5 Flash Integration**: Uses Google's Gemini 2.5 Flash model with system instructions
 - **Prompt Engineering Techniques**:
   - System prompts with role definition
   - Personality traits and behavioral guidelines
@@ -113,10 +113,12 @@ Once the backend is running, you can access:
 ## API Endpoints
 
 ### Chat
+
 - `POST /api/chat` - Chat with Zara (includes conversation history)
 - `GET /api/character` - Get character information and system prompt
 
 ### Testing
+
 - `POST /api/test` - Run a test case (success, boundary, or adversarial)
 - `GET /api/tests` - Get all test results (optionally filtered by type)
 - `GET /api/tests/stats` - Get test statistics
@@ -146,7 +148,7 @@ This solution demonstrates:
 ✅ Multiple prompt engineering techniques  
 ✅ Safety guardrails and defensive prompting  
 ✅ Testing framework for validation  
-✅ Production-ready code structure  
+✅ Production-ready code structure
 
 ## API Key Security
 
