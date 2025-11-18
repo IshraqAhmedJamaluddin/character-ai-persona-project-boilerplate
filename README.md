@@ -18,6 +18,13 @@ character-ai-persona/
 
 ## Setup Instructions
 
+### Get Your Free Gemini API Key
+
+1. Visit [Google AI Studio](https://aistudio.google.com/app/apikey)
+2. Sign in with your Google account
+3. Click "Create API Key" to generate a free API key
+4. Copy your API key (you'll need it in the next step)
+
 ### Backend Setup
 
 1. Navigate to the backend directory:
@@ -39,7 +46,20 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-4. Run the FastAPI server:
+4. Set up your API key:
+
+```bash
+# Copy the example environment file
+cp ../.env.example .env
+
+# Edit .env and add your Gemini API key
+# On Windows, you can use notepad or any text editor
+# On Mac/Linux, use: nano .env
+```
+
+Then edit `.env` and replace `your_api_key_here` with your actual API key from Google AI Studio.
+
+5. Run the FastAPI server:
 
 ```bash
 python main.py
@@ -70,7 +90,7 @@ Once the backend is running, you can access:
 ## Current Features
 
 - **Simple Chat Interface**: Basic chat UI with message input and display
-- **Echo Response**: Backend simply echoes back user messages with a basic response
+- **Gemini 2.0 Flash Integration**: Uses Google's Gemini 2.0 Flash model for responses
 - **No Prompt Engineering**: This is intentionally simple - no character, no system prompts, no advanced features
 
 ## API Endpoints
@@ -92,7 +112,11 @@ By the end of the course, you will:
 This starter code is intentionally minimal. Your task is to:
 
 - Design and implement an AI character persona
-- Add proper prompt engineering techniques
-- Integrate with LLM APIs (Claude, ChatGPT, Gemini, DeepSeek)
-- Test your character thoroughly
+- Add proper prompt engineering techniques (system prompts, role prompting, guardrails)
+- Use Gemini 2.0 Flash with your character's system prompt
+- Test your character thoroughly (15+ scenarios: success, boundary, adversarial)
 - Document your work for your portfolio
+
+## API Key Security
+
+⚠️ **Important**: Never commit your `.env` file to version control. The `.env.example` file is provided as a template. Always keep your API key private.

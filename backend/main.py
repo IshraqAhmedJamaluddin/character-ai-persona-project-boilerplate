@@ -3,11 +3,23 @@ Simple Chat Application - Starter Code
 A basic chat interface with no prompt engineering.
 """
 
-from fastapi import FastAPI
+import os
+from datetime import datetime
+from typing import List
+
+import google.generativeai as genai
+from dotenv import load_dotenv
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List
-from datetime import datetime
+
+# Load environment variables
+load_dotenv()
+
+# Configure Gemini API
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+if GEMINI_API_KEY:
+    genai.configure(api_key=GEMINI_API_KEY)
 
 app = FastAPI(title="Simple Chat API", version="1.0.0")
 
@@ -50,20 +62,34 @@ async def health_check():
 @app.post("/api/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
     """
-    Simple chat endpoint - just echoes back with a basic response.
-    No prompt engineering, no character, just a generic response.
+    Simple chat endpoint - uses Gemini 2.5 Flash with no prompt engineering.
+    Just a basic chat interface.
     """
-    user_message = request.message
-    
-    # Simple response - no prompt engineering
-    response_text = f"You said: {user_message}. This is a basic response with no prompt engineering."
-    
-    return ChatResponse(
-        response=response_text,
-        timestamp=datetime.now().isoformat()
-    )
+    user_message = request.message.strip()
+
+    if not user_message:
+        raise HTTPException(status_code=400, detail="Message cannot be empty")
+
+    if not GEMINI_API_KEY:
+        raise HTTPException(
+            status_code=500,
+            detail="GEMINI_API_KEY not configured. Please set it in your .env file. Get a free key from https://aistudio.google.com/app/apikey",
+        )
+
+    try:
+        # Use Gemini 1.5 Flash - no system prompt, no character, just basic chat
+        model = genai.GenerativeModel("gemini-1.5-flash")
+        response = model.generate_content(user_message)
+        response_text = response.text
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Error calling Gemini API: {str(e)}"
+        )
+
+    return ChatResponse(response=response_text, timestamp=datetime.now().isoformat())
 
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)
