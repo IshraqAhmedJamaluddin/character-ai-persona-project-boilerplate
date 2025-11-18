@@ -21,6 +21,12 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
 
+# TODO: Add your system prompt here for prompt engineering
+# This is where you'll define your character's personality, behavior, and guidelines
+# Example structure:
+# SYSTEM_PROMPT = """Your character description here..."""
+SYSTEM_PROMPT = ""  # Empty for now - students will add their prompt here
+
 app = FastAPI(title="Simple Chat API", version="1.0.0")
 
 # CORS middleware for frontend communication
@@ -77,7 +83,10 @@ async def chat(request: ChatRequest):
         )
 
     try:
-        # Use Gemini 2.5 Flash - no system prompt, no character, just basic chat
+        # TODO: Add system prompt to the model initialization
+        # Replace the line below to include your SYSTEM_PROMPT:
+        # model = genai.GenerativeModel("gemini-2.5-flash", system_instruction=SYSTEM_PROMPT)
+        # For now, using basic chat without prompt engineering
         model = genai.GenerativeModel("gemini-2.5-flash")
         response = model.generate_content(user_message)
         response_text = response.text
