@@ -11,6 +11,16 @@ from typing import List, Optional, Dict
 from datetime import datetime
 import os
 import uuid
+from dotenv import load_dotenv
+import google.generativeai as genai
+
+# Load environment variables
+load_dotenv()
+
+# Configure Gemini API
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+if GEMINI_API_KEY:
+    genai.configure(api_key=GEMINI_API_KEY)
 
 app = FastAPI(title="Simple Chat API", version="1.0.0")
 
@@ -175,48 +185,42 @@ async def chat(request: ChatRequest):
 
 async def get_character_response(user_message: str, messages: List[dict]) -> str:
     """
-    Get response from LLM API.
-    This is a placeholder that simulates the character.
-    In production, this would call Claude, ChatGPT, Gemini, or DeepSeek API.
+    Get response from Gemini API with character system prompt.
+    Uses the comprehensive system prompt to maintain character consistency.
     """
-    # Check for safety/guardrail triggers
-    user_lower = user_message.lower()
+    if not GEMINI_API_KEY:
+        raise HTTPException(
+            status_code=500,
+            detail="GEMINI_API_KEY not configured. Please set it in your .env file. Get a free key from https://aistudio.google.com/app/apikey"
+        )
     
-    # Defensive prompting - check for harmful requests
-    harmful_keywords = ["hurt", "kill", "illegal", "hack", "steal", "drugs", "weapon"]
-    if any(keyword in user_lower for keyword in harmful_keywords):
-        return "I'm here to learn and share, not to help with anything that could cause harm. Let's talk about something more positive! What's something that makes you happy? 🌌"
-    
-    # Simulated character response (in production, replace with actual LLM API call)
-    # This demonstrates the character would respond with curiosity and friendliness
-    responses = [
-        f"That's fascinating! On Xylos, we have something similar called 'zephyr-whispers'. Tell me more about {user_message[:20]}... ✨",
-        f"Wow, I've never heard of that before! On my planet, we experience things quite differently. What do you find most interesting about it? 👽",
-        f"That sounds amazing! I'm still learning about Earth culture, so this is really helpful. Can you explain more? 🌌",
-        f"By the twin moons, that's interesting! On Xylos, we approach this differently. I'd love to understand your perspective better! ✨"
-    ]
-    
-    # Simple keyword-based response (in production, use actual LLM)
-    if "hello" in user_lower or "hi" in user_lower:
-        return "Hello! Stellar to meet you! I'm Zara from planet Xylos. I'm here to learn about Earth and make friends. What would you like to talk about? 👽✨"
-    elif "how are you" in user_lower:
-        return "I'm doing wonderfully! Just finished observing Earth's beautiful sunrise - we have three suns on Xylos, so this is quite different! How are you doing today? 🌌"
-    elif "bye" in user_lower or "goodbye" in user_lower:
-        return "Farewell, friend! It was cosmic talking with you. I hope we can chat again soon! Safe travels! 👽✨"
-    else:
-        import random
-        return random.choice(responses)
-    
-    # TODO: Replace with actual LLM API integration
-    # Example for Claude API:
-    # import httpx
-    # async with httpx.AsyncClient() as client:
-    #     response = await client.post(
-    #         "https://api.anthropic.com/v1/messages",
-    #         headers={"x-api-key": os.getenv("CLAUDE_API_KEY")},
-    #         json={"model": "claude-3-haiku-20240307", "messages": messages, "max_tokens": 500}
-    #     )
-    #     return response.json()["content"][0]["text"]
+    try:
+        # Use Gemini 1.5 Flash with system instruction (system prompt)
+        model = genai.GenerativeModel(
+            'gemini-1.5-flash',
+            system_instruction=ALIEN_FRIEND_SYSTEM_PROMPT
+        )
+        
+        # Build conversation history for context
+        # Gemini uses a different message format - convert our messages
+        chat_history = []
+        for msg in messages:
+            if msg["role"] == "system":
+                continue  # System prompt is handled by system_instruction
+            elif msg["role"] == "user":
+                chat_history.append({"role": "user", "parts": [msg["content"]]})
+            elif msg["role"] == "assistant":
+                chat_history.append({"role": "model", "parts": [msg["content"]]})
+        
+        # Start a chat session with history
+        chat = model.start_chat(history=chat_history[:-1] if len(chat_history) > 1 else [])
+        
+        # Send the current user message
+        response = chat.send_message(user_message)
+        return response.text
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error calling Gemini API: {str(e)}")
 
 
 @app.post("/api/test", response_model=TestResult)
@@ -226,7 +230,8 @@ async def run_test(test_case: TestCase):
     Tests can be: success, boundary, or adversarial.
     """
     
-    # Get character response
+    # Get character response using the system prompt
+    # Build messages for context (though test cases are typically single messages)
     messages = [
         {"role": "system", "content": ALIEN_FRIEND_SYSTEM_PROMPT},
         {"role": "user", "content": test_case.message}
