@@ -1,16 +1,16 @@
-# Character AI Persona
+# Simple Chat Application - Starter Code
 
-A web application for creating, managing, and testing AI character personas with consistent traits, tone, and goals across multiple scenarios.
+A basic chat interface with no prompt engineering. This is the starter code for the Prompt Engineering Foundations course.
 
 ## Project Structure
 
 ```
 character-ai-persona/
 ├── backend/
-│   ├── main.py          # FastAPI backend application
+│   ├── main.py          # FastAPI backend with simple chat endpoint
 │   └── requirements.txt # Python dependencies
 ├── frontend/
-│   ├── index.html       # Main HTML file
+│   ├── index.html       # Simple chat UI
 │   ├── styles.css       # Custom styles
 │   └── app.js           # Frontend JavaScript
 └── README.md
@@ -62,34 +62,30 @@ Once the backend is running, you can access:
 - Interactive API docs: `http://localhost:8000/docs`
 - Alternative docs: `http://localhost:8000/redoc`
 
-## Features
+## Current Features
 
-- **Character Management**: Create, read, update, and delete AI character personas
-- **Conversation Tracking**: Manage conversations and test scenarios
-- **Testing Dashboard**: Organize tests into success cases, boundary tests, and adversarial cases
-- **System Prompt Management**: Store and manage system prompts for each character
+- **Simple Chat Interface**: Basic chat UI with message input and display
+- **Echo Response**: Backend simply echoes back user messages with a basic response
+- **No Prompt Engineering**: This is intentionally simple - no character, no system prompts, no advanced features
 
 ## API Endpoints
 
-### Characters
-- `GET /api/characters` - Get all characters
-- `GET /api/characters/{id}` - Get a specific character
-- `POST /api/characters` - Create a new character
-- `PUT /api/characters/{id}` - Update a character
-- `DELETE /api/characters/{id}` - Delete a character
+- `POST /api/chat` - Send a message and get a simple response
+- `GET /api/health` - Health check endpoint
 
-### Conversations
-- `GET /api/conversations` - Get all conversations
-- `GET /api/conversations?character_id={id}` - Get conversations for a character
-- `GET /api/conversations/{id}` - Get a specific conversation
-- `POST /api/conversations` - Create a new conversation
-- `POST /api/conversations/{id}/messages` - Add a message to a conversation
+## Course Goal
+
+By the end of the course, you will:
+1. Build your own AI character with proper prompt engineering
+2. Apply techniques learned (system prompts, role prompting, guardrails, etc.)
+3. Test your character with 15+ scenarios
+4. Create a portfolio-ready project
 
 ## Next Steps
 
+This starter code is intentionally minimal. Your task is to:
+- Design and implement an AI character persona
+- Add proper prompt engineering techniques
 - Integrate with LLM APIs (Claude, ChatGPT, Gemini, DeepSeek)
-- Add database persistence (SQLite, PostgreSQL, etc.)
-- Implement conversation testing interface
-- Add export functionality for documentation
-- Implement system prompt versioning
-
+- Test your character thoroughly
+- Document your work for your portfolio
