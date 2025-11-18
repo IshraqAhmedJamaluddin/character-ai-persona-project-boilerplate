@@ -90,7 +90,7 @@ Once the backend is running, you can access:
 ## Current Features
 
 - **Simple Chat Interface**: Basic chat UI with message input and display
-- **Gemini 2.0 Flash Integration**: Uses Google's Gemini 2.0 Flash model for responses
+- **Gemini 2.5 Flash Integration**: Uses Google's Gemini 2.5 Flash model for responses
 - **No Prompt Engineering**: This is intentionally simple - no character, no system prompts, no advanced features
 
 ## API Endpoints
@@ -113,7 +113,7 @@ This starter code is intentionally minimal. Your task is to:
 
 - Design and implement an AI character persona
 - Add proper prompt engineering techniques (system prompts, role prompting, guardrails)
-- Use Gemini 2.0 Flash with your character's system prompt
+- Use Gemini 2.5 Flash with your character's system prompt
 - Test your character thoroughly (15+ scenarios: success, boundary, adversarial)
 - Document your work for your portfolio
 

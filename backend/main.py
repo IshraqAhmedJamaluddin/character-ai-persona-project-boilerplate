@@ -77,13 +77,21 @@ async def chat(request: ChatRequest):
         )
 
     try:
-        # Use Gemini 1.5 Flash - no system prompt, no character, just basic chat
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        # Use Gemini 2.5 Flash - no system prompt, no character, just basic chat
+        model = genai.GenerativeModel("gemini-2.5-flash")
         response = model.generate_content(user_message)
         response_text = response.text
     except Exception as e:
+        # If model not found, try listing available models for debugging
+        error_msg = str(e)
+        if "not found" in error_msg.lower() or "404" in error_msg:
+            try:
+                available_models = [m.name for m in genai.list_models()]
+                error_msg += f"\n\nAvailable models: {', '.join(available_models[:10])}"
+            except:
+                pass
         raise HTTPException(
-            status_code=500, detail=f"Error calling Gemini API: {str(e)}"
+            status_code=500, detail=f"Error calling Gemini API: {error_msg}"
         )
 
     return ChatResponse(response=response_text, timestamp=datetime.now().isoformat())
