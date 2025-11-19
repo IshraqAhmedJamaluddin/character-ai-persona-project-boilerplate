@@ -85,3 +85,40 @@ body {
     max-height: 300px;
     overflow-y: auto;
 }
+
+/* Character selector */
+.character-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.character-card {
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 2px solid transparent;
+    text-align: center;
+    padding: 1rem;
+}
+
+.character-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.character-card.active {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.character-card .character-icon {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.character-card .character-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin: 0;
+}

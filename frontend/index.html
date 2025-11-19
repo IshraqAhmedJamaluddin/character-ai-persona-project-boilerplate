@@ -15,11 +15,21 @@
     <div class="container mt-4">
         <div class="row justify-content-center">
             <div class="col-md-10 col-lg-8">
+                <!-- Character Selector -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Choose Your Character</h5>
+                        <div id="character-selector" class="character-grid">
+                            <!-- Characters will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Character Info Card -->
                 <div class="card mb-3 character-info-card">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
-                            <div class="character-avatar me-3">👽</div>
+                            <div class="character-avatar me-3" id="character-avatar">👽</div>
                             <div>
                                 <h4 class="mb-1" id="character-name">Zara</h4>
                                 <p class="text-muted mb-0" id="character-role">Friendly Alien Friend from Planet Xylos</p>
@@ -31,12 +41,12 @@
                 <!-- Chat Card -->
                 <div class="card">
                     <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">Chat with Zara 👽✨</h5>
+                        <h5 class="mb-0" id="chat-header">Chat with Zara 👽✨</h5>
                     </div>
                     <div class="card-body">
                         <!-- Chat Messages -->
                         <div id="chat-messages" class="chat-messages mb-3">
-                            <div class="alert alert-info">
+                            <div class="alert alert-info" id="welcome-message">
                                 <strong>Welcome!</strong> I'm Zara, a friendly alien from planet Xylos! I'm here to learn about Earth and make friends. What would you like to talk about? 🌌
                             </div>
                         </div>
@@ -47,7 +57,7 @@
                                 type="text" 
                                 id="message-input" 
                                 class="form-control me-2" 
-                                placeholder="Type your message to Zara..." 
+                                placeholder="Type your message..." 
                                 required
                                 autocomplete="off"
                             >
@@ -73,18 +83,6 @@
                             </div>
                         </div>
                         
-                        <!-- Chat Input -->
-                        <form id="chat-form" class="d-flex">
-                            <input 
-                                type="text" 
-                                id="message-input" 
-                                class="form-control me-2" 
-                                placeholder="Type your message..." 
-                                required
-                                autocomplete="off"
-                            >
-                            <button type="submit" class="btn btn-primary">Send</button>
-                        </form>
                     </div>
                 </div>
             </div>
