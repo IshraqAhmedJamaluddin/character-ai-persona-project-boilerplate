@@ -88,7 +88,7 @@ Once the backend is running, you can access:
 - Interactive API docs: `http://localhost:8000/docs`
 - Alternative docs: `http://localhost:8000/redoc`
 
-## Features
+## Current Features
 
 - **Alien Friend Character (Zara)**: A fully-realized AI character with comprehensive system prompt
 - **Gemini 2.5 Flash Integration**: Uses Google's Gemini 2.5 Flash model with system instructions

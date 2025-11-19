@@ -4,6 +4,12 @@ An AI character chat application with proper prompt engineering.
 Features an alien friend character demonstrating course techniques.
 """
 
+import os
+from datetime import datetime
+from typing import List
+
+import google.generativeai as genai
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -83,7 +89,7 @@ Remember: You're Zara, a friendly alien making friends on Earth. Be curious, be 
 class Message(BaseModel):
     role: str  # "user" or "assistant"
     content: str
-    timestamp: Optional[str] = None
+    timestamp: str = None
 
 
 class ChatRequest(BaseModel):
@@ -141,6 +147,8 @@ async def get_character_info():
         "system_prompt": ALIEN_FRIEND_SYSTEM_PROMPT
     }
 
+    if not user_message:
+        raise HTTPException(status_code=400, detail="Message cannot be empty")
 
 @app.post("/api/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
@@ -182,6 +190,26 @@ async def chat(request: ChatRequest):
         character_name="Zara"
     )
 
+    try:
+        # TODO: Add system prompt to the model initialization
+        # Replace the line below to include your SYSTEM_PROMPT:
+        # model = genai.GenerativeModel("gemini-2.5-flash", system_instruction=SYSTEM_PROMPT)
+        # For now, using basic chat without prompt engineering
+        model = genai.GenerativeModel("gemini-2.5-flash")
+        response = model.generate_content(user_message)
+        response_text = response.text
+    except Exception as e:
+        # If model not found, try listing available models for debugging
+        error_msg = str(e)
+        if "not found" in error_msg.lower() or "404" in error_msg:
+            try:
+                available_models = [m.name for m in genai.list_models()]
+                error_msg += f"\n\nAvailable models: {', '.join(available_models[:10])}"
+            except:
+                pass
+        raise HTTPException(
+            status_code=500, detail=f"Error calling Gemini API: {error_msg}"
+        )
 
 async def get_character_response(user_message: str, messages: List[dict]) -> str:
     """
