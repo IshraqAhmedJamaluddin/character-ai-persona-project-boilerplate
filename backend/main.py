@@ -195,25 +195,34 @@ async def get_character_response(user_message: str, messages: List[dict]) -> str
         )
     
     try:
-        # Use Gemini 2.5 Flash with system instruction (system prompt)
-        model = genai.GenerativeModel(
-            'gemini-2.5-flash',
-            system_instruction=ALIEN_FRIEND_SYSTEM_PROMPT
-        )
+        # Use Gemini 2.5 Flash - system prompt is included in the messages
+        model = genai.GenerativeModel('gemini-2.5-flash')
         
         # Build conversation history for context
         # Gemini uses a different message format - convert our messages
+        # Include system prompt as the first message
         chat_history = []
+        
+        # Add system prompt as first message if present
+        system_prompt_found = False
         for msg in messages:
             if msg["role"] == "system":
-                continue  # System prompt is handled by system_instruction
+                # Add system prompt as a user message with special formatting
+                chat_history.append({"role": "user", "parts": [f"System: {msg['content']}"]})
+                chat_history.append({"role": "model", "parts": ["Understood. I'll follow these instructions."]})
+                system_prompt_found = True
             elif msg["role"] == "user":
                 chat_history.append({"role": "user", "parts": [msg["content"]]})
             elif msg["role"] == "assistant":
                 chat_history.append({"role": "model", "parts": [msg["content"]]})
         
-        # Start a chat session with history
-        chat = model.start_chat(history=chat_history[:-1] if len(chat_history) > 1 else [])
+        # If no system message in history, prepend it
+        if not system_prompt_found and ALIEN_FRIEND_SYSTEM_PROMPT:
+            chat_history.insert(0, {"role": "user", "parts": [f"System: {ALIEN_FRIEND_SYSTEM_PROMPT}"]})
+            chat_history.insert(1, {"role": "model", "parts": ["Understood. I'll follow these instructions."]})
+        
+        # Start a chat session with history (excluding the current user message)
+        chat = model.start_chat(history=chat_history[:-1] if len(chat_history) > 1 and chat_history[-1]["role"] == "user" else chat_history)
         
         # Send the current user message
         response = chat.send_message(user_message)
